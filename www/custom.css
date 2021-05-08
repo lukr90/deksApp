@@ -1,0 +1,56 @@
+body {
+  background-color: #f2f5f2;
+}
+
+#top_header{
+  margin: 20px 0px 10px 0px;
+  width: 100%;
+  height: 60px auto;
+  background-color: rgba(105, 138, 110, .75);
+  border-radius: 12px;
+}
+
+#top_header h4{
+  font-weight: bold;
+  font-size: 22px;
+  color: white;
+  padding: 20px 0px 20px 10px;
+}
+
+#top_description{
+  margin: 0px 0px 20px 0px;
+  width: 100%;
+  height: 40px auto;
+  background-color: rgba(164, 191, 169, .75);
+  border-radius: 12px;
+}
+
+#top_description p{
+  color: black;
+  font-size: 20px;
+  padding: 10px 0px 5px 10px;
+}
+
+#input {
+  width: 100%;
+}
+
+#output {
+  width: 100%;
+}
+
+#button_section {
+  max-width: 10%;
+  float: left;
+}
+
+#get_tbl{
+  margin-bottom: 10px;
+  background-color: #ddede3;
+  float: left;
+}
+
+#download_tbl {
+  background-color: #dfe8e2;
+  float: left;
+}
