@@ -122,7 +122,6 @@ ui = fluidPage(
         tags$div(class = "title_container",
         tags$h4("company.name", class = "head_title")),
         
-        
         tags$div(class = "nav_container",
         tags$nav(
             tags$ul(
@@ -161,10 +160,12 @@ ui = fluidPage(
     downloadButton(outputId = "download_tbl", label = "Download")),
     
     tags$aside(class = "demo_section_ouputs",
- 
+        
+        shinyjs::hidden(
+        tags$h5("results", class = "table_title", id = "table_title")),
         reactableOutput(outputId = "result_table"))),
     
-    tags$div(class = "dem_section_footer",
+    tags$div(class = "demo_section_footer",
         tags$a("more details about the project here", href = "#"))),
     
     shiny::tags$head(
@@ -181,6 +182,7 @@ server = function(input, output, session){
 
     observeEvent(input$get_tbl, {
         shinyjs::enable(id = "download_tbl")
+        shinyjs::show(id = "table_title")
     })
 
     observeEvent(input$select_brand, {
@@ -238,7 +240,14 @@ server = function(input, output, session){
         
         result_tbl() %>%
             reactable(data = .,
-                      filterable = TRUE, height = 380, showPageSizeOptions = TRUE, showSortable = TRUE, showSortIcon = TRUE, resizable = TRUE)
+                      filterable = TRUE, 
+                      height = 305,
+                      width = 580,
+                      showPageSizeOptions = TRUE, 
+                      showSortable = TRUE, 
+                      showSortIcon = TRUE, 
+                      resizable = TRUE, 
+                      defaultColDef = colDef(headerClass = "table_header"))
     })
 
     output$download_tbl = downloadHandler(
