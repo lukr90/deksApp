@@ -6,6 +6,7 @@ library(shinyjs)
 library(rvest)
 library(polite)
 library(readr)
+library(reactable)
 
 # brand <- "asus"
 # type <- "mainboard"
@@ -51,7 +52,7 @@ get_next_lvl_info <- function(...) {
     is_parts <- html_code %>% 
         html_element("p") %>%
         html_text() %>%
-        str_detect("Ersatzteile für:")
+        str_detect("Ersatzteile fÃ¼r:")
     
     if(!is_parts) {
         hrefs <- html_code %>% 
@@ -111,73 +112,68 @@ get_parts <- function(...){
     }
 }
 
-top_header = "Ersatzteile für Dekoelektro"
-top_description = "Ersatzteile unter anderem für Desktop/Notebooks von Herstellern wie Acer, Asus, Dell, Fujitsu, HP, Lenovo, Medion, MSI. Durchsuche insgesamt über 1.000.000 Ersatzteile."
+top_header = "spare parts for deko.elektro"
+top_description = "Spare parts for desktop/notebooks from manufacturers such as Acer, Asus, Dell, Fujitsu, HP, Lenovo, Medion, MSI, among others. Search a total of over 1,000,000 spare parts."
 
 
 ui = fluidPage(
     
-    column(width = 10, offset = 1,
+    tags$header(class = "head_container",
+        tags$div(class = "title_container",
+        tags$h4("company.name", class = "head_title")),
+        
+        
+        tags$div(class = "nav_container",
+        tags$nav(
+            tags$ul(
+                tags$li(tags$a("Projects", href = "#")),
+                tags$li(tags$a("People", href = "#")),
+                tags$li(tags$a("Philosophy", href = "#")),
+                tags$li(tags$a("Ps & Pbes", href = "#"))))),
+        
+        tags$div(class = "contact_container",
+            tags$button("Contact", class = "custom_btn contact_btn"))
+    ),
     
-    shiny::tags$head(shiny::tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")),
-    
-    
-    shiny::tags$header(
-    shiny::tags$div(id = "top_header",
-                    
-                    shiny::tags$h4(top_header)),
-    
-    shiny::tags$div(id = "top_description",
-                    
-                    shiny::tags$p(top_description))),
-    
-    column(width = 3,
-    
-    shiny::tags$div(id = "input",
-                        
-                        shiny::tags$h4("Auswahlmöglichkeiten"),
+    tags$section(class = "demo_section",
+        tags$div(class = "demo_section_head",
+        tags$h4("Demo project:"),
+        tags$h5(top_header)),
+        tags$div(class = "demo_section_desc",
+        tags$p(top_description)),
+        
+    tags$div(class = "demo_section_fraction",
+        
+    tags$aside(class = "demo_section_inputs",
 
-    shiny::tags$section(id = "input1",
-    
-                    selectizeInput(inputId = "select_brand", label = "Marke", choices = get_next_lvl_info())),
-    
-    shinyjs::hidden(
-    
-    shiny::tags$section(id = "input2",
-    
-                    selectizeInput(inputId = "select_type", label = "Typ", choices = NULL)),
-    
-    shiny::tags$section(id = "input3",
-    
-                    selectizeInput(inputId = "select_series", label = "Serien", choices = NULL)),
-    
-    shiny::tags$section(id = "input4",
-    
-                    selectizeInput(inputId = "select_modell", label = "Modelle", choices = NULL)),
-    
-    shiny::tags$section(id = "input5",
+    selectizeInput(inputId = "select_brand", label = "Brand", choices = get_next_lvl_info(), options = list(items = NULL, placeholder = "select a brand")),
 
-                    selectizeInput(inputId = "select_parts", label = "Zubehör", choices = NULL)))),
-    
-    shiny::tags$div(id = "button_section",
+    selectizeInput(inputId = "select_type", label = "Typs", choices = NULL),
 
+    selectizeInput(inputId = "select_series", label = "Serieses", choices = NULL),
+
+    selectizeInput(inputId = "select_modell", label = "Modells", choices = NULL),
+
+    selectizeInput(inputId = "select_parts", label = "Parts", choices = NULL),
+    
     actionButton(inputId = "get_tbl", label = "Tibble", icon = icon("coins")),
     
-    downloadButton(outputId = "download_tbl", label = "Download"))),
+    downloadButton(outputId = "download_tbl", label = "Download")),
     
-    column(width = 9,
-           
-    shiny::tags$div(id = "output",
-           
-           shiny::tags$h4("Ergebnisse"),
-           
-           tableOutput(outputId = "result_table"))),
+    tags$aside(class = "demo_section_ouputs",
+ 
+        reactableOutput(outputId = "result_table"))),
     
+    tags$div(class = "dem_section_footer",
+        tags$a("more details about the project here", href = "#"))),
+    
+    shiny::tags$head(
+        shiny::tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")),
     shiny::tags$script(
         src = "myscript.js"),
     useShinyjs()
 
-))
+)
 
 server = function(input, output, session){
     
@@ -188,48 +184,39 @@ server = function(input, output, session){
     })
 
     observeEvent(input$select_brand, {
-        
-        shinyjs::show(id = "input2")
-        #shinyjs::disable(id = "secondInput")
-        
+
         updateSelectizeInput(session = session,
                           inputId = "select_type",
                           label = "Typ", 
                           choices = get_next_lvl_info(input$select_brand), 
-                          options = list(placeholder = "Wähle einen Typ"), selected = "NULL")
+                          options = list(placeholder = "select a type", items = NULL))
     }, ignoreInit = TRUE)
 
     observeEvent(input$select_type, {
-        
-        shinyjs::show(id = "input3")
         
         updateSelectizeInput(session = session,
                           inputId = "select_series",
                           label = "Serien",
                           choices = get_next_lvl_info(input$select_brand, input$select_type), 
-                          options = list(placeholder = "Wähle eine Serie"), selected = "NULL")
+                          options = list(placeholder = "select a series", items = NULL))
     }, ignoreInit = TRUE)
 
     observeEvent(input$select_series, {
-        
-        shinyjs::show(id = "input4")
         
         updateSelectizeInput(session = session,
                           inputId = "select_modell",
                           label = "Modelle",
                           choices = get_next_lvl_info(input$select_brand, input$select_type, input$select_series), 
-                          options = list(placeholder = "Wähle ein Modell"), selected = "NULL")
+                          options = list(placeholder = "select a modell", items = NULL))
     }, ignoreInit = TRUE)
 
     observeEvent(input$select_modell, {
-        
-        shinyjs::show(id = "input5")
         
         updateSelectizeInput(session = session,
                           inputId = "select_parts",
                           label = "Zubehör",
                           choices = get_next_lvl_info(input$select_brand, input$select_type, input$select_series, input$select_modell), 
-                          options = list(placeholder = "Wähle ein Modell"), selected = "NULL")
+                          options = list(placeholder = "select a part", items = NULL))
     }, ignoreInit = TRUE)
     
     
@@ -247,9 +234,11 @@ server = function(input, output, session){
 
     })
 
-    output$result_table = renderTable({
+    output$result_table = renderReactable({
         
-        result_tbl()
+        result_tbl() %>%
+            reactable(data = .,
+                      filterable = TRUE, height = 380, showPageSizeOptions = TRUE, showSortable = TRUE, showSortIcon = TRUE, resizable = TRUE)
     })
 
     output$download_tbl = downloadHandler(
