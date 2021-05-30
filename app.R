@@ -125,7 +125,18 @@ ui = fluidPage(
         tags$div(class = "nav_container",
         tags$nav(
             tags$ul(
+                
+                tags$div(class = "dropdown",
+                
                 tags$li(tags$a("Projects", href = "#")),
+                
+                tags$div(class = "dropdown_content",
+                         
+                tags$a("Project one", href = "#"),
+                tags$a("Project two", href = "#"),
+                tags$a("Project three", href = "#"))
+                ),
+                
                 tags$li(tags$a("People", href = "#")),
                 tags$li(tags$a("Philosophy", href = "#")),
                 tags$li(tags$a("Ps & Pbes", href = "#"))))),
@@ -143,23 +154,23 @@ ui = fluidPage(
         
     tags$div(class = "demo_section_fraction",
         
-    tags$aside(class = "demo_section_inputs",
+    tags$div(class = "demo_section_inputs",
 
     selectizeInput(inputId = "select_brand", label = "Brand", choices = get_next_lvl_info(), options = list(items = NULL, placeholder = "select a brand")),
 
-    selectizeInput(inputId = "select_type", label = "Typs", choices = NULL),
+    selectizeInput(inputId = "select_type", label = "Typs", choices = NULL, options = list(placeholder = "select a brand first")),
 
-    selectizeInput(inputId = "select_series", label = "Serieses", choices = NULL),
+    selectizeInput(inputId = "select_series", label = "Serieses", choices = NULL, options = list(placeholder = "select a brand and type first")),
 
-    selectizeInput(inputId = "select_modell", label = "Modells", choices = NULL),
+    selectizeInput(inputId = "select_modell", label = "Modells", choices = NULL, options = list(placeholder = "select a brand, type and series first")),
 
-    selectizeInput(inputId = "select_parts", label = "Parts", choices = NULL),
+    selectizeInput(inputId = "select_parts", label = "Parts", choices = NULL, options = list(placeholder = "select a brand, type, series and modell first")),
     
     actionButton(inputId = "get_tbl", label = "Tibble", icon = icon("coins")),
     
     downloadButton(outputId = "download_tbl", label = "Download")),
     
-    tags$aside(class = "demo_section_ouputs",
+    tags$div(class = "demo_section_ouputs",
         
         shinyjs::hidden(
         tags$h5("results", class = "table_title", id = "table_title")),
@@ -189,7 +200,7 @@ server = function(input, output, session){
 
         updateSelectizeInput(session = session,
                           inputId = "select_type",
-                          label = "Typ", 
+                          label = "Types", 
                           choices = get_next_lvl_info(input$select_brand), 
                           options = list(placeholder = "select a type", items = NULL))
     }, ignoreInit = TRUE)
@@ -198,7 +209,7 @@ server = function(input, output, session){
         
         updateSelectizeInput(session = session,
                           inputId = "select_series",
-                          label = "Serien",
+                          label = "Serieses",
                           choices = get_next_lvl_info(input$select_brand, input$select_type), 
                           options = list(placeholder = "select a series", items = NULL))
     }, ignoreInit = TRUE)
@@ -207,7 +218,7 @@ server = function(input, output, session){
         
         updateSelectizeInput(session = session,
                           inputId = "select_modell",
-                          label = "Modelle",
+                          label = "Modells",
                           choices = get_next_lvl_info(input$select_brand, input$select_type, input$select_series), 
                           options = list(placeholder = "select a modell", items = NULL))
     }, ignoreInit = TRUE)
@@ -216,7 +227,7 @@ server = function(input, output, session){
         
         updateSelectizeInput(session = session,
                           inputId = "select_parts",
-                          label = "Zubehör",
+                          label = "Parts",
                           choices = get_next_lvl_info(input$select_brand, input$select_type, input$select_series, input$select_modell), 
                           options = list(placeholder = "select a part", items = NULL))
     }, ignoreInit = TRUE)
@@ -241,8 +252,6 @@ server = function(input, output, session){
         result_tbl() %>%
             reactable(data = .,
                       filterable = TRUE, 
-                      height = 305,
-                      width = 580,
                       showPageSizeOptions = TRUE, 
                       showSortable = TRUE, 
                       showSortIcon = TRUE, 
