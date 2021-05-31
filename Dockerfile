@@ -20,6 +20,7 @@ RUN Rscript -e "install.packages('rvest')"
 RUN Rscript -e "install.packages('polite')"
 RUN Rscript -e "install.packages('readr')"
 RUN Rscript -e "install.packages('reactable')"
+RUN Rscript -e "install.packages('shinyjs')"
 
 COPY / /
 
