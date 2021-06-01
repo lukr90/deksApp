@@ -120,7 +120,7 @@ ui = fluidPage(
     
     tags$header(class = "head_container",
         tags$div(class = "title_container",
-        tags$h4("company.name", class = "head_title")),
+        tags$a("company.name", href = "#")),
         
         tags$div(class = "nav_container",
         tags$nav(
