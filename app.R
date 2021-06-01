@@ -139,7 +139,17 @@ ui = fluidPage(
                 
                 tags$li(tags$a("People", href = "#")),
                 tags$li(tags$a("Philosophy", href = "#")),
-                tags$li(tags$a("Ps & Pbes", href = "#"))))),
+                
+                tags$div(class = "dropdown",
+                
+                tags$li(tags$a("Ps & Pbes", href = "#")),
+                
+                tags$div(class = "dropdown_content",
+                
+                tags$a("Ps", href = "#"),
+                tags$a("Pbes", href = "#"))
+                )
+        ))),
         
         tags$div(class = "contact_container",
             tags$button("Contact", class = "custom_btn contact_btn"))
@@ -251,6 +261,7 @@ server = function(input, output, session){
         
         result_tbl() %>%
             reactable(data = .,
+                      height = 300,
                       filterable = TRUE, 
                       showPageSizeOptions = TRUE, 
                       showSortable = TRUE, 
